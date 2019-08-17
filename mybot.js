@@ -1,80 +1,58 @@
-const config = require('./botconfig.json');
-const Discord = require("discord.js");
-const client = new Discord.Client();
-const profanities = ['shit', 'merda', 'fds', 'caralho', 'puta', 'fuck', 'cona', 'pila' ,'topkek','caralhete'];
+const {Client, RichEmbed} = require('discord.js');
+const client = new Client();
+const {token, prefix} = require('./botconfig.json');
 
+
+//avatar
 client.on("message", (message) => {
-  if (message.content.startsWith("yeet")) {
-    message.channel.send("Bitch you thought");
-  }
-});
+	if (!message.content.startsWith(prefix) || message.author.bot) return;
+  	if (message.content.startsWith(prefix + "avatar"))
+			{
+    		message.reply(message.author.avatarURL);
+  		}
+		});
 
-//Swear words
+
+//emded
 client.on("message", (message) => {
-  var checkProfanities= function(profanity){
-    return message.content.includes(profanity)
-  };
-
-  if (profanities.some(checkProfanities))
-  {
-    message.channel.send("*In high pitch* Watch your profanity");
-  }
+	if (!message.content.startsWith(prefix) || message.author.bot) return;
+  	if (message.content.startsWith(prefix + "botinfo"))
+			{
+				const embed = new RichEmbed()
+					.setColor('#0099ff')
+					.setTitle('Useless Bot')
+					.setURL('https://bit.ly/IqT6zt')
+					.setAuthor('Useless Bot', 'https://media1.giphy.com/media/Ju7l5y9osyymQ/giphy.gif', '')
+					.setDescription('This bot was created out of pure boredom, hope you are somewhat entertained by it.')
+					.setThumbnail('https://media1.giphy.com/media/Ju7l5y9osyymQ/giphy.gif')
+					.setImage('https://media1.giphy.com/media/Ju7l5y9osyymQ/giphy.gif')
+					.setTimestamp()
+					.setFooter('Useless bot is a joke please dont take it too serious uwu', 'https://media1.giphy.com/media/Ju7l5y9osyymQ/giphy.gif');
+    	message.channel.send(embed);
+  		}
 });
 
 
-
-//Join server add Newbs
-client.on('guildMemberAdd', member => {
-  member.addRole('312678877312974852');
-});
-
-
-//Adds Newbs a quem n tenha
-
-//vai buscar o token a config file
-client.login(config.token);
-
-//show the console a Ready message
-client.on("ready", () => {
-  console.log("I am ready!");
-});
-
-/*  for(let i=0;client.guilds.length-1;i++){
-
-
-for (let j=0;guilds[i].members.length-1;j++){
-      if(guilds[i].members[j].roles.length==0){
-        guilds[i].members[j].addRole('312678877312974852');
-      }
-
-  }
-  console.log("Membros movidos");
-}
-
-
-
-
-
-/*Start of the Comment
-
-client.guilds.forEach((function(guild) {
-if(guild.name=='Singularity'){
-  guild.members.forEach((function(member){
-    if(member.roles.lenght==0){
-      member.addRole('312678877312974852');
-    }
-  });
+//Server Join
+client.on("guildMemberAdd", (member) => { // Check out previous chapter for information about this event
+let guild = member.guild;
+let memberTag = member.user.tag;
+if(guild.systemChannel){
+	guild.systemChannel.send(new RichEmbed() // Creating instance of Discord.RichEmbed
+	.setTitle("A new user joined") // Calling method setTitle on constructor.
+	.setDescription(memberTag + " has joined the" + ) // Setting embed description
+	.setImage('https://thumbs.gfycat.com/ForthrightHugeAmericanratsnake-size_restricted.gif')
+	.setThumbnail(member.user.displayAvatarURL) // The image on the top right; method requires an url, not a path to file!
+	.addField("Members now", member.guild.memberCount) // Adds a field; First parameter is the title and the second is the value.
+	.setTimestamp() // Sets a timestamp at the end of the embed
+	);
 }
 });
 
-//Adicionar profanities
 
-client.on("message", (message) => {
-if (message.content.startsWith('=')){
-  if (message.content.substring(1,7)=='addprof'){
-    profanities.push(message.content.slice(8,message.lenght-1));
-    console.log(message.content.slice(8,message.lenght-1));
-  }
-}
+//Ready to work properly
+client.on('ready', () => {
+  console.log('I am ready!');
 });
-End of Comment*/
+
+client.login(token);
